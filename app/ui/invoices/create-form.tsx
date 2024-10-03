@@ -9,7 +9,11 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function CreateInvoiceForm({
+  customers,
+}: {
+  customers: CustomerField[];
+}) {
   return (
     <form action={createInvoice}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
