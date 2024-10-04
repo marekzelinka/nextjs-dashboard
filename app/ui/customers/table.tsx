@@ -30,10 +30,10 @@ export default async function CustomersTable({
                           <div className="flex items-center gap-3">
                             <Image
                               src={customer.image_url}
-                              className="rounded-full"
-                              alt={`${customer.name}'s profile picture`}
+                              alt=""
                               width={28}
                               height={28}
+                              className="rounded-full"
                             />
                             <p>{customer.name}</p>
                           </div>
@@ -87,10 +87,10 @@ export default async function CustomersTable({
                         <div className="flex items-center gap-3">
                           <Image
                             src={customer.image_url}
-                            className="rounded-full"
-                            alt={`${customer.name}'s profile picture`}
+                            alt=""
                             width={28}
                             height={28}
+                            className="rounded-full"
                           />
                           <p>{customer.name}</p>
                         </div>
