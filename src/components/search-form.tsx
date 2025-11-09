@@ -5,13 +5,20 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import Form from "next/form";
+import type { Route } from "next";
+import Form, { type FormProps } from "next/form";
 import { useSearchParams } from "next/navigation";
 import type { ChangeEvent } from "react";
 import { useFormStatus } from "react-dom";
 import { useDebouncedCallback } from "use-debounce";
 
-export function SearchForm({ placeholder }: { placeholder: string }) {
+export function SearchForm({
+  action,
+  placeholder,
+}: {
+  action: FormProps<Route>["action"];
+  placeholder: string;
+}) {
   const searchParams = useSearchParams();
 
   const handleSearch = useDebouncedCallback(
@@ -22,10 +29,7 @@ export function SearchForm({ placeholder }: { placeholder: string }) {
   );
 
   return (
-    <Form
-      action="/dashboard/invoices"
-      className="relative flex flex-1 shrink-0"
-    >
+    <Form action={action} className="relative flex flex-1 shrink-0">
       <label htmlFor="search" className="sr-only">
         Search
       </label>

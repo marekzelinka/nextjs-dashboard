@@ -27,7 +27,10 @@ export default async function InvoicesPage({
         <h1 className="font-serif text-2xl">Invoices</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <SearchForm placeholder="Search invoices..." />
+        <SearchForm
+          action="/dashboard/invoices"
+          placeholder="Search invoices..."
+        />
         <CreateInvoiceButton />
       </div>
       <Suspense
