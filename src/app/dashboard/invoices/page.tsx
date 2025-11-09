@@ -1,38 +1,40 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { fetchInvoicesPages } from "@/lib/data";
-import { CreateInvoice } from "@/ui/invoices/buttons";
-import Pagination from "@/ui/invoices/pagination";
-import Table from "@/ui/invoices/table";
-import Search from "@/ui/search";
-import { InvoicesTableSkeleton } from "@/ui/skeletons";
+import { Pagination } from "@/components/pagination";
+import { SearchForm } from "@/components/search-form";
+import { CreateInvoiceButton } from "@/features/invoices/components/create-invoice-button";
+import { InvoicesTable } from "@/features/invoices/components/invoices-table";
+import { getInvoicesPages } from "@/features/invoices/queries/get-invoices-pages";
+import { InvoicesTableSkeleton } from "@/features/invoices/skeletons/invoices-table-skeleton";
 
 export const metadata: Metadata = {
   title: "Invoices",
 };
 
-export default async function Page(props: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
-}) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchInvoicesPages(query);
+export default async function InvoicesPage({
+  searchParams,
+}: PageProps<"/dashboard/invoices">) {
+  const { query, page } = await searchParams;
+
+  const searchQuery = query?.toString() ?? "";
+  const currentPage = Number(page) || 1;
+
+  const totalPages = await getInvoicesPages(searchQuery);
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`font-serif text-2xl`}>Invoices</h1>
+        <h1 className="font-serif text-2xl">Invoices</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
-        <CreateInvoice />
+        <SearchForm placeholder="Search invoices..." />
+        <CreateInvoiceButton />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+      <Suspense
+        key={searchQuery + currentPage}
+        fallback={<InvoicesTableSkeleton />}
+      >
+        <InvoicesTable query={searchQuery} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

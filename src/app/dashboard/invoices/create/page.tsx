@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { fetchCustomers } from "@/lib/data";
-import Breadcrumbs from "@/ui/invoices/breadcrumbs";
-import Form from "@/ui/invoices/create-form";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { getCustomers } from "@/features/customers/queries/get-customers";
+import { CreateInvoiceForm } from "@/features/invoices/components/create-invoice-form";
 
 export const metadata: Metadata = {
   title: "Create Invoice",
 };
 
-export default async function Page() {
-  const customers = await fetchCustomers();
+export default async function CreateInvoicePage() {
+  const customers = await getCustomers();
 
   return (
     <main>
@@ -22,7 +22,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={customers} />
+      <CreateInvoiceForm customers={customers} />
     </main>
   );
 }

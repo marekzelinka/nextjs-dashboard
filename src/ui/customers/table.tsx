@@ -2,7 +2,7 @@ import Image from "next/image";
 import type {
   // CustomersTableType,
   FormattedCustomersTable,
-} from "@/lib/definitions";
+} from "@/types";
 import Search from "@/ui/search";
 
 export default async function CustomersTable({

@@ -1,6 +1,5 @@
 import postgres from "postgres";
 import { env } from "@/env";
-import { formatCurrency } from "../utils/format-currency";
 import type {
   CustomerField,
   CustomersTableType,
@@ -8,9 +7,10 @@ import type {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
-} from "./definitions";
+} from "@/types";
+import { formatCurrency } from "@/utils/format-currency";
 
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
+export const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
 export async function fetchRevenue() {
   try {
@@ -51,42 +51,7 @@ export async function fetchLatestInvoices() {
   }
 }
 
-export async function fetchCardData() {
-  try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
-
-    const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
-    ]);
-
-    const numberOfInvoices = Number(data[0][0].count ?? "0");
-    const numberOfCustomers = Number(data[1][0].count ?? "0");
-    const totalPaidInvoices = formatCurrency(data[2][0].paid ?? "0");
-    const totalPendingInvoices = formatCurrency(data[2][0].pending ?? "0");
-
-    return {
-      numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
-    };
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch card data.");
-  }
-}
-
-const ITEMS_PER_PAGE = 6;
+export const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
@@ -119,27 +84,6 @@ export async function fetchFilteredInvoices(
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoices.");
-  }
-}
-
-export async function fetchInvoicesPages(query: string) {
-  try {
-    const data = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
-  `;
-
-    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of invoices.");
   }
 }
 

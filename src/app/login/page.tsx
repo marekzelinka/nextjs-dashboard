@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import AcmeLogo from "@/ui/acme-logo";
-import LoginForm from "@/ui/login-form";
+import { AppLogo } from "@/components/app-logo";
+import { LoginForm } from "@/features/auth/components/login-form";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -13,7 +13,7 @@ export default function LoginPage() {
       <div className="md:-mt-32 relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4">
         <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
           <div className="w-32 text-white md:w-36">
-            <AcmeLogo />
+            <AppLogo />
           </div>
         </div>
         <Suspense>
