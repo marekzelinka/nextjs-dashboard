@@ -5,9 +5,9 @@ import postgres from "postgres";
 import { z } from "zod";
 import type { User } from "@/lib/definitions";
 import { authConfig } from "./auth.config";
+import { env } from "./env";
 
-// biome-ignore lint/style/noNonNullAssertion: TODO fix me
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
 async function getUser(email: string): Promise<User | undefined> {
   try {

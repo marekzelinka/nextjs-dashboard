@@ -1,4 +1,5 @@
 import postgres from "postgres";
+import { env } from "@/env";
 import type {
   CustomerField,
   CustomersTableType,
@@ -9,8 +10,7 @@ import type {
 } from "./definitions";
 import { formatCurrency } from "./utils";
 
-// biome-ignore lint/style/noNonNullAssertion: TODO fix me
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
 export async function fetchRevenue() {
   try {

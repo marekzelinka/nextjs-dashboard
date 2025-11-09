@@ -6,9 +6,9 @@ import { AuthError } from "next-auth";
 import postgres from "postgres";
 import { z } from "zod";
 import { signIn } from "@/auth";
+import { env } from "@/env";
 
-// biome-ignore lint/style/noNonNullAssertion: TODO fix me
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
 const FormSchema = z.object({
   id: z.string(),
