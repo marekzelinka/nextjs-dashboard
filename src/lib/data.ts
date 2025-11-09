@@ -1,5 +1,6 @@
 import postgres from "postgres";
 import { env } from "@/env";
+import { formatCurrency } from "../utils/format-currency";
 import type {
   CustomerField,
   CustomersTableType,
@@ -8,7 +9,6 @@ import type {
   LatestInvoiceRaw,
   Revenue,
 } from "./definitions";
-import { formatCurrency } from "./utils";
 
 const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
