@@ -1,10 +1,17 @@
-import { GlobeAltIcon } from "@heroicons/react/24/outline";
+import { LucideGlobe } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export function AppLogo() {
+export function AppLogo({ className }: { className?: string }) {
   return (
-    <div className="flex flex-row items-center font-serif text-white leading-none">
-      <GlobeAltIcon className="size-12 rotate-15" />
-      <p className="text-[44px]">Acme</p>
-    </div>
+    <Link
+      href="/"
+      className={cn("flex items-center gap-2 font-medium", className)}
+    >
+      <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+        <LucideGlobe className="size-4" />
+      </div>
+      Invoify
+    </Link>
   );
 }

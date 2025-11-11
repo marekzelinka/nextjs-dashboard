@@ -8,14 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FieldDescription } from "@/components/ui/field";
-import { SignupForm } from "@/features/auth/components/signup-form";
+import { LoginForm } from "@/features/auth/components/login-form";
 
 export const metadata: Metadata = {
-  title: "Create Account",
+  title: "Login",
 };
 
-export default function SignupPage() {
+export default function LoginPage() {
   return (
     <main className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -24,23 +23,18 @@ export default function SignupPage() {
           <Card>
             <CardHeader className="text-center">
               <CardTitle asChild className="font-serif text-xl">
-                <h1>Create your account</h1>
+                <h1>Login to your account</h1>
               </CardTitle>
               <CardDescription>
-                Enter your email below to create your account
+                Enter your email below to login to your account
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Suspense>
-                <SignupForm />
+                <LoginForm />
               </Suspense>
             </CardContent>
           </Card>
-          <FieldDescription className="px-6 text-center">
-            By clicking continue, you agree to our{" "}
-            <a href="#terms">Terms of Service</a> and{" "}
-            <a href="#privacy">Privacy Policy</a>.
-          </FieldDescription>
         </div>
       </div>
     </main>

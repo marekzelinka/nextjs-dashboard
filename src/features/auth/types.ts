@@ -1,4 +1,4 @@
-export type SignInActionState = {
+export type LoginActionState = {
   errors?: {
     email?: string[];
     password?: string[];
@@ -6,7 +6,7 @@ export type SignInActionState = {
   message?: string | null;
 };
 
-export type SignUpActionState = {
+export type SignupActionState = {
   errors?: {
     name?: string[];
     email?: string[];

@@ -11,7 +11,7 @@ export const requireAuth = cache(async () => {
   });
 
   if (!session) {
-    redirect("/sign-in");
+    redirect("/login");
   }
 
   return { isLoggedIn: true, userId: session.user.id };

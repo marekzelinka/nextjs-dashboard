@@ -1,50 +1,41 @@
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { LucideLogIn } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { AppLogo } from "@/components/app-logo";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Acme Dashboard",
+  title: "Welcome to Invoify",
 };
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
-        <AppLogo />
-      </div>
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
-        <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
-          <p className="font-serif text-gray-800 text-xl md:text-3xl md:leading-normal">
-            <strong>Welcome to Acme.</strong> This is the example for the{" "}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
-              Next.js Learn Course
-            </a>
-            , brought to you by Vercel.
-          </p>
-          <Link
-            href="/sign-in"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 font-medium text-sm text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+    <main className="grid min-h-svh">
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex justify-between gap-2">
+          <AppLogo />
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/login">
+              Sign in
+              <LucideLogIn />
+            </Link>
+          </Button>
         </div>
-        <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          <Image
-            src="/hero-desktop.png"
-            alt=""
-            width={1000}
-            height={760}
-            className="hidden md:block"
-          />
-          <Image
-            src="/hero-mobile.png"
-            alt=""
-            width={560}
-            height={620}
-            className="block md:hidden"
-          />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="container flex w-full flex-col items-center gap-2 text-center xl:gap-4">
+            <h1 className="max-w-4xl text-balance font-semibold font-serif text-4xl leading-tighter tracking-tight lg:font-semibold lg:leading-[1.1] xl:text-5xl xl:tracking-tighter">
+              A better way to manage your invoices
+            </h1>
+            <p className="max-w-3xl text-balance font-serif text-base sm:text-lg">
+              Simplify and speed up your invoicing with a reliable solution that
+              keeps your business running smoothly.
+            </p>
+            <div className="flex w-full items-center justify-center gap-2 pt-2 **:data-[slot=button]:shadow-none">
+              <Button asChild size="sm">
+                <Link href="/sign-up">Get Started</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </main>

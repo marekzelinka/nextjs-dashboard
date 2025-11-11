@@ -1,55 +1,61 @@
 "use client";
 
 import {
-  DocumentDuplicateIcon,
-  HomeIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
-import clsx from "clsx";
+  LucideFileSpreadsheet,
+  LucideGauge,
+  type LucideIcon,
+  LucideUsers,
+} from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 type NavItem<T extends string = string> = {
   href: T;
-  label: string;
-  icon: typeof HomeIcon;
+  title: string;
+  icon: LucideIcon;
 };
 
 const navItems: NavItem<Route>[] = [
-  { href: "/dashboard", label: "Home", icon: HomeIcon },
+  { href: "/dashboard", title: "Dashboard", icon: LucideGauge },
   {
     href: "/dashboard/invoices",
-    label: "Invoices",
-    icon: DocumentDuplicateIcon,
+    title: "Invoices",
+    icon: LucideFileSpreadsheet,
   },
-  { href: "/dashboard/customers", label: "Customers", icon: UserGroupIcon },
+  { href: "/dashboard/customers", title: "Customers", icon: LucideUsers },
 ];
 
 export function NavMain() {
   const pathname = usePathname();
 
   return (
-    <>
-      {navItems.map((item) => {
-        const LinkIcon = item.icon;
+    <SidebarGroup>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
 
-        return (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={clsx(
-              "flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 font-medium text-sm hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
-              {
-                "bg-sky-100 text-blue-600": pathname === item.href,
-              },
-            )}
-          >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{item.label}</p>
-          </Link>
-        );
-      })}
-    </>
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild isActive={isActive}>
+                  <Link href={item.href}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
   );
 }

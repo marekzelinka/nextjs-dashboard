@@ -11,11 +11,13 @@ export async function proxy(request: NextRequest) {
   const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");
 
   if (isOnDashboard) {
-    if (isLoggedIn) {
-      return NextResponse.next();
-    }
+    if (isLoggedIn) return NextResponse.next();
 
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    const loginParams = new URLSearchParams([
+      ["callbackUrl", request.nextUrl.pathname],
+    ]);
+
+    return NextResponse.redirect(new URL(`/login?${loginParams}`, request.url));
   } else if (isLoggedIn) {
     return Response.redirect(new URL("/dashboard", request.nextUrl));
   }

@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import * as z from "zod";
 
 const NameSchema = z
@@ -7,7 +8,7 @@ const NameSchema = z
   .max(40, { error: "Name must be at most 40 characters." });
 
 const EmailSchema = z
-  .email({ error: "Invalid email format" })
+  .email({ error: "Invalid email format." })
   .min(3, { error: "Email must be at least 3 characters." })
   .max(100, { error: "Email must be at most 100 characters." })
   // Users can type the email in any case, but we store it in lowercase
@@ -16,7 +17,7 @@ const EmailSchema = z
 const PASSWORD_MAX_LENGTH = 72;
 
 const PasswordSchema = z
-  .string({ error: "Password is required" })
+  .string({ error: "Password is required." })
   .trim()
   .min(8, {
     error: "Password must be at least 8 characters.",
@@ -29,13 +30,17 @@ const PasswordSchema = z
     },
   );
 
-export const SignInSchema = z.object({
+const CallbackUrlSchema = z.string().optional();
+
+export const LoginSchema = z.object({
   email: EmailSchema,
   password: PasswordSchema,
+  callbackUrl: CallbackUrlSchema.transform((arg) => arg || "/dashboard"),
 });
 
-export const SignUpSchema = z.object({
+export const SignupSchema = z.object({
   name: NameSchema,
   email: EmailSchema,
   password: PasswordSchema,
+  callbackUrl: CallbackUrlSchema.transform((arg) => arg || "/dashboard"),
 });
