@@ -1,5 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = createEnv({
   server: {
@@ -7,12 +7,12 @@ export const env = createEnv({
     DATABASE_URL: z.url({ protocol: /^postgresql$/ }),
 
     // Auth
-    AUTH_SECRET: z.string().trim().min(42),
-    AUTH_URL: z.url(),
+    BETTER_AUTH_SECRET: z.string(),
+    BETTER_AUTH_URL: z.url(),
   },
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
-    AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTH_URL: process.env.AUTH_URL,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
   },
 });

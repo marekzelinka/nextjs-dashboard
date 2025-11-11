@@ -1,28 +1,28 @@
 "use server";
 
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import postgres from "postgres";
 import * as z from "zod";
-import { env } from "@/env";
+import { db } from "@/db/connection";
+import * as schema from "@/db/schema";
+import { requireAuth } from "@/features/auth/queries/require-auth";
 import type { UpdateInvoiceActionState } from "../types";
 import { UpdateInvoiceFormValues } from "../validations";
-
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
 export async function updateInvoice(
   id: string,
   _prevState: UpdateInvoiceActionState,
   formData: FormData,
 ) {
-  // Validate form using Zod
+  const { userId } = await requireAuth();
+
   const validatedFields = UpdateInvoiceFormValues.safeParse({
     customerId: formData.get("customerId"),
     amount: formData.get("amount"),
     status: formData.get("status"),
   });
 
-  // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
       errors: z.flattenError(validatedFields.error).fieldErrors,
@@ -30,15 +30,19 @@ export async function updateInvoice(
     };
   }
 
-  // Prepare data for insertion into the database
   const { customerId, amount, status } = validatedFields.data;
 
   try {
-    await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amount}, status = ${status}
-      WHERE id = ${id}
-    `;
+    await db
+      .update(schema.invoices)
+      .set({
+        customerId,
+        amount,
+        status,
+      })
+      .where(
+        and(eq(schema.invoices.id, id), eq(schema.invoices.userId, userId)),
+      );
   } catch {
     return { message: "Database Error: Failed to Update Invoice." };
   }

@@ -17,7 +17,7 @@ export async function DashboardLatestInvoices() {
             >
               <div className="flex items-center">
                 <Image
-                  src={invoice.image_url}
+                  src={invoice.customer.imageUrl}
                   alt=""
                   width={32}
                   height={32}
@@ -25,10 +25,10 @@ export async function DashboardLatestInvoices() {
                 />
                 <div className="min-w-0">
                   <p className="truncate font-semibold text-sm md:text-base">
-                    {invoice.name}
+                    {invoice.customer.name}
                   </p>
                   <p className="hidden text-gray-500 text-sm sm:block">
-                    {invoice.email}
+                    {invoice.customer.email}
                   </p>
                 </div>
               </div>

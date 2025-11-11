@@ -1,40 +1,49 @@
-import postgres from "postgres";
-import { env } from "@/env";
-import type { CustomersTableType } from "@/types";
+import { and, asc, count, eq, ilike, or, sql } from "drizzle-orm";
+import { db } from "@/db/connection";
+import * as schema from "@/db/schema";
+import { requireAuth } from "@/features/auth/queries/require-auth";
 import { formatCurrency } from "@/utils/format-currency";
 
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
+export async function getFilteredCustomers({ query }: { query: string }) {
+  const { userId } = await requireAuth();
 
-export async function getFilteredCustomers(query: string) {
-  try {
-    const data = await sql<CustomersTableType[]>`
-  		SELECT
-  		  customers.id,
-  		  customers.name,
-  		  customers.email,
-  		  customers.image_url,
-  		  COUNT(invoices.id) AS total_invoices,
-  		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-  		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-  		FROM customers
-  		LEFT JOIN invoices ON customers.id = invoices.customer_id
-  		WHERE
-  		  customers.name ILIKE ${`%${query}%`} OR
-          customers.email ILIKE ${`%${query}%`}
-  		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-  		ORDER BY customers.name ASC
-	  `;
+  const customers = await db
+    .select({
+      id: schema.customers.id,
+      name: schema.customers.name,
+      email: schema.customers.email,
+      imageUrl: schema.customers.imageUrl,
+      totalInvoices: count(schema.invoices.id),
+      totalPending: sql<number>`sum(case when ${schema.invoices.status} = 'pending' then ${schema.invoices.amount} else 0 end)`,
+      totalPaid: sql<number>`sum(case when ${schema.invoices.status} = 'paid' then ${schema.invoices.amount} else 0 end)`,
+    })
+    .from(schema.customers)
+    .leftJoin(
+      schema.invoices,
+      eq(schema.customers.id, schema.invoices.customerId),
+    )
+    .where(
+      and(
+        eq(schema.customers.userId, userId),
+        or(
+          ilike(schema.customers.name, `%${query}%`),
+          ilike(schema.customers.email, `%${query}%`),
+        ),
+      ),
+    )
+    .groupBy(
+      schema.customers.id,
+      schema.customers.name,
+      schema.customers.email,
+      schema.customers.imageUrl,
+    )
+    .orderBy(asc(schema.customers.name));
 
-    const customers = data.map((customer) => ({
-      ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
-    }));
+  const customersWithFormattedCurrency = customers.map((customer) => ({
+    ...customer,
+    totalPending: formatCurrency(customer.totalPending),
+    totalPaid: formatCurrency(customer.totalPaid),
+  }));
 
-    return customers;
-  } catch (error) {
-    console.error("Database Error:", error);
-
-    throw new Error("Failed to fetch customer table.");
-  }
+  return customersWithFormattedCurrency;
 }

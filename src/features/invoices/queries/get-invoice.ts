@@ -1,31 +1,35 @@
-import postgres from "postgres";
-import { env } from "@/env";
-import type { InvoiceForm } from "@/types";
+import { db } from "@/db/connection";
+import { requireAuth } from "@/features/auth/queries/require-auth";
 
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
+export async function getInvoice({ id }: { id: string }) {
+  const { userId } = await requireAuth();
 
-export async function getInvoice(id: string) {
-  try {
-    const data = await sql<InvoiceForm[]>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `;
+  const invoices = await db.query.invoices.findFirst({
+    where: (invoices, { eq, and }) =>
+      and(eq(invoices.id, id), eq(invoices.userId, userId)),
+    columns: {
+      id: true,
+      amount: true,
+      status: true,
+    },
+    with: {
+      customer: {
+        columns: {
+          id: true,
+        },
+      },
+    },
+  });
 
-    const invoice = data.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }));
-
-    return invoice[0];
-  } catch (error) {
-    console.error("Database Error:", error);
-
-    throw new Error("Failed to fetch invoice.");
+  if (!invoices) {
+    return null;
   }
+
+  const invoiceWithFormattedAmount = {
+    ...invoices,
+    // Convert amount from cents to dollars
+    amount: invoices.amount / 100,
+  };
+
+  return invoiceWithFormattedAmount;
 }

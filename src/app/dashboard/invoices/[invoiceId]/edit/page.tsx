@@ -15,7 +15,7 @@ export default async function EditInvoicePage({
   const { invoiceId } = await params;
 
   const [invoice, customers] = await Promise.all([
-    getInvoice(invoiceId),
+    getInvoice({ id: invoiceId }),
     getCustomers(),
   ]);
 

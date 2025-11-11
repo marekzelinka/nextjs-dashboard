@@ -1,6 +1,9 @@
-import type { Revenue } from "../types";
-
-export function generateYAxis(revenue: Revenue[]) {
+export function generateYAxis(
+  revenue: {
+    month: string;
+    revenue: number;
+  }[],
+) {
   // Calculate what labels we need to display on the y-axis
   // based on highest record and in 1000s
   const yAxisLabels = [];

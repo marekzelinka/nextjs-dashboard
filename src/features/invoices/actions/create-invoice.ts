@@ -2,18 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import postgres from "postgres";
 import * as z from "zod";
-import { env } from "@/env";
+import { db } from "@/db/connection";
+import * as schema from "@/db/schema";
+import { requireAuth } from "@/features/auth/queries/require-auth";
 import type { CreateInvoiceActionState } from "../types";
 import { CreateInvoiceFormValues } from "../validations";
-
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
 
 export async function createInvoice(
   _prevState: CreateInvoiceActionState,
   formData: FormData,
 ) {
+  const { userId } = await requireAuth();
+
   const validatedFields = CreateInvoiceFormValues.safeParse({
     customerId: formData.get("customerId"),
     amount: formData.get("amount"),
@@ -31,17 +32,19 @@ export async function createInvoice(
   const date = new Date().toISOString().split("T")[0];
 
   try {
-    await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amount}, ${status}, ${date})
-    `;
+    await db.insert(schema.invoices).values({
+      userId,
+      customerId,
+      amount,
+      status,
+      date,
+    });
   } catch {
     return {
       message: "Database Error: Failed to Create Invoice.",
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
 }

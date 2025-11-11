@@ -2,7 +2,7 @@ import Image from "next/image";
 import { getFilteredCustomers } from "../queries/get-filtered-customers";
 
 export async function CustomersTable({ query }: { query: string }) {
-  const customers = await getFilteredCustomers(query);
+  const customers = await getFilteredCustomers({ query });
 
   return (
     <div className="mt-6 flow-root">
@@ -20,7 +20,7 @@ export async function CustomersTable({ query }: { query: string }) {
                       <div className="mb-2 flex items-center">
                         <div className="flex items-center gap-3">
                           <Image
-                            src={customer.image_url}
+                            src={customer.imageUrl}
                             alt=""
                             width={28}
                             height={28}
@@ -35,15 +35,15 @@ export async function CustomersTable({ query }: { query: string }) {
                   <div className="flex w-full items-center justify-between border-b py-5">
                     <div className="flex w-1/2 flex-col">
                       <p className="text-xs">Pending</p>
-                      <p className="font-medium">{customer.total_pending}</p>
+                      <p className="font-medium">{customer.totalPending}</p>
                     </div>
                     <div className="flex w-1/2 flex-col">
                       <p className="text-xs">Paid</p>
-                      <p className="font-medium">{customer.total_paid}</p>
+                      <p className="font-medium">{customer.totalPaid}</p>
                     </div>
                   </div>
                   <div className="pt-4 text-sm">
-                    <p>{customer.total_invoices} invoices</p>
+                    <p>{customer.totalInvoices} invoices</p>
                   </div>
                 </div>
               ))}
@@ -75,7 +75,7 @@ export async function CustomersTable({ query }: { query: string }) {
                     <td className="whitespace-nowrap bg-white py-5 pr-3 pl-4 text-black text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                       <div className="flex items-center gap-3">
                         <Image
-                          src={customer.image_url}
+                          src={customer.imageUrl}
                           alt=""
                           width={28}
                           height={28}
@@ -88,13 +88,13 @@ export async function CustomersTable({ query }: { query: string }) {
                       {customer.email}
                     </td>
                     <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                      {customer.total_invoices}
+                      {customer.totalInvoices}
                     </td>
                     <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                      {customer.total_pending}
+                      {customer.totalPending}
                     </td>
                     <td className="whitespace-nowrap bg-white px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
-                      {customer.total_paid}
+                      {customer.totalPaid}
                     </td>
                   </tr>
                 ))}

@@ -10,14 +10,14 @@ import Form from "next/form";
 import Link from "next/link";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
-import type { CustomerField } from "@/types";
+import type { SelectCustomer } from "@/db/schema";
 import { createInvoice } from "../actions/create-invoice";
 import type { CreateInvoiceActionState } from "../types";
 
 export function CreateInvoiceForm({
   customers,
 }: {
-  customers: CustomerField[];
+  customers: Pick<SelectCustomer, "id" | "name">[];
 }) {
   const initialState: CreateInvoiceActionState = { message: null, errors: {} };
   const [state, formAction] = useActionState(createInvoice, initialState);

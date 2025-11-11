@@ -1,40 +1,60 @@
-import postgres from "postgres";
-import { env } from "@/env";
-import type { InvoicesTable } from "@/types";
+import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { db } from "@/db/connection";
+import * as schema from "@/db/schema";
+import { requireAuth } from "@/features/auth/queries/require-auth";
 
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
+export async function getFilteredInvoices({
+  query,
+  currentPage,
+  limit,
+}: {
+  query: string;
+  currentPage: number;
+  limit: number;
+}) {
+  const { userId } = await requireAuth();
 
-export const ITEMS_PER_PAGE = 6;
+  const offset = (currentPage - 1) * limit;
 
-export async function getFilteredInvoices(query: string, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const invoices = await db
+    .select({
+      id: schema.invoices.id,
+      amount: schema.invoices.amount,
+      status: schema.invoices.status,
+      date: schema.invoices.date,
+      name: schema.customers.name,
+      email: schema.customers.email,
+      imageUrl: schema.customers.imageUrl,
+    })
+    .from(schema.invoices)
+    .innerJoin(
+      schema.customers,
+      eq(schema.invoices.customerId, schema.customers.id),
+    )
+    .where(
+      and(
+        eq(schema.invoices.userId, userId),
+        or(
+          ilike(schema.customers.name, `%${query}%`),
+          ilike(schema.customers.email, `%${query}%`),
+          ilike(sql`cast(${schema.invoices.amount} as text)`, `%${query}%`),
+          ilike(sql`cast(${schema.invoices.date} as text)`, `%${query}%`),
+          ilike(sql`cast(${schema.invoices.status} as text)`, `%${query}%`),
+        ),
+      ),
+    )
+    .orderBy(desc(schema.invoices.date))
+    .limit(limit)
+    .offset(offset);
 
-  try {
-    const invoices = await sql<InvoicesTable[]>`
-      SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
+  const invoicesWithCustomerField = invoices.map((invoice) => ({
+    ...invoice,
+    customer: {
+      name: invoice.name,
+      email: invoice.email,
+      imageUrl: invoice.imageUrl,
+    },
+  }));
 
-    return invoices;
-  } catch (error) {
-    console.error("Database Error:", error);
-
-    throw new Error("Failed to fetch invoices.");
-  }
+  return invoicesWithCustomerField;
 }

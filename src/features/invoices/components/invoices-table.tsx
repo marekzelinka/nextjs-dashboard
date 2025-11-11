@@ -9,11 +9,13 @@ import { InvoiceStatus } from "./invoice-status";
 export async function InvoicesTable({
   query,
   currentPage,
+  limit,
 }: {
   query: string;
   currentPage: number;
+  limit: number;
 }) {
-  const invoices = await getFilteredInvoices(query, currentPage);
+  const invoices = await getFilteredInvoices({ query, currentPage, limit });
 
   return (
     <div className="mt-6 flow-root">
@@ -29,15 +31,17 @@ export async function InvoicesTable({
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={invoice.image_url}
+                        src={invoice.customer.imageUrl}
                         alt=""
                         width={28}
                         height={28}
                         className="mr-2 rounded-full"
                       />
-                      <p>{invoice.name}</p>
+                      <p>{invoice.customer.name}</p>
                     </div>
-                    <p className="text-gray-500 text-sm">{invoice.email}</p>
+                    <p className="text-gray-500 text-sm">
+                      {invoice.customer.email}
+                    </p>
                   </div>
                   <InvoiceStatus status={invoice.status} />
                 </div>
@@ -88,17 +92,17 @@ export async function InvoicesTable({
                   <td className="whitespace-nowrap py-3 pr-3 pl-6">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={invoice.image_url}
+                        src={invoice.customer.imageUrl}
                         alt=""
                         width={28}
                         height={28}
                         className="rounded-full"
                       />
-                      <p>{invoice.name}</p>
+                      <p>{invoice.customer.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {invoice.customer.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(invoice.amount)}

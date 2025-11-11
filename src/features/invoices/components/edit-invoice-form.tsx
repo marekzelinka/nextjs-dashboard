@@ -10,7 +10,7 @@ import Form from "next/form";
 import Link from "next/link";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
-import type { CustomerField, InvoiceForm } from "@/types";
+import type { SelectCustomer, SelectInvoice } from "@/db/schema";
 import { updateInvoice } from "../actions/update-invoice";
 import type { UpdateInvoiceActionState } from "../types";
 
@@ -18,8 +18,10 @@ export function EditInvoiceForm({
   invoice,
   customers,
 }: {
-  invoice: InvoiceForm;
-  customers: CustomerField[];
+  invoice: Pick<SelectInvoice, "id" | "amount" | "status"> & {
+    customer: Pick<SelectCustomer, "id">;
+  };
+  customers: Pick<SelectCustomer, "id" | "name">[];
 }) {
   const initialState: UpdateInvoiceActionState = { message: null, errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
@@ -38,7 +40,7 @@ export function EditInvoiceForm({
               id="customer"
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={invoice.customer_id}
+              defaultValue={invoice.customer.id}
               aria-describedby="customer-error"
             >
               <option value="" disabled>

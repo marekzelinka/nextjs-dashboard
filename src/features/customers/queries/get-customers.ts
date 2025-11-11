@@ -1,23 +1,19 @@
-import postgres from "postgres";
-import { env } from "@/env";
-import type { CustomerField } from "@/types";
-
-const sql = postgres(env.DATABASE_URL, { ssl: "require" });
+import { asc, eq } from "drizzle-orm";
+import { db } from "@/db/connection";
+import * as schema from "@/db/schema";
+import { requireAuth } from "@/features/auth/queries/require-auth";
 
 export async function getCustomers() {
-  try {
-    const customers = await sql<CustomerField[]>`
-      SELECT
-        id,
-        name
-      FROM customers
-      ORDER BY name ASC
-    `;
+  const { userId } = await requireAuth();
 
-    return customers;
-  } catch (error) {
-    console.error("Database Error:", error);
+  const customers = await db
+    .select({
+      id: schema.customers.id,
+      name: schema.customers.name,
+    })
+    .from(schema.customers)
+    .where(eq(schema.customers.userId, userId))
+    .orderBy(asc(schema.customers.name));
 
-    throw new Error("Failed to fetch all customers.");
-  }
+  return customers;
 }
