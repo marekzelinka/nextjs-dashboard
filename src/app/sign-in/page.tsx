@@ -1,0 +1,25 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { AppLogo } from "@/components/app-logo";
+import { SignInForm } from "@/features/auth/components/sign-in-form";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+};
+
+export default function SignInPage() {
+  return (
+    <main className="flex items-center justify-center md:h-screen">
+      <div className="md:-mt-32 relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4">
+        <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
+          <div className="w-32 text-white md:w-36">
+            <AppLogo />
+          </div>
+        </div>
+        <Suspense>
+          <SignInForm />
+        </Suspense>
+      </div>
+    </main>
+  );
+}
