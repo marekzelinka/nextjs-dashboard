@@ -1,4 +1,20 @@
 import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { formatCurrency } from "@/utils/format-currency";
 import { formatDateToLocal } from "@/utils/format-date";
 import { getFilteredInvoices } from "../queries/get-filtered-invoices";
@@ -18,7 +34,57 @@ export async function InvoicesTable({
   const invoices = await getFilteredInvoices({ query, currentPage, limit });
 
   return (
-    <div className="mt-6 flow-root">
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>#</TableHead>
+          <TableHead>Customer</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead>Sttatus</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="sr-only">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {invoices.map((invoice) => (
+          <TableRow key={invoice.id}>
+            <TableCell className="font-medium tabular-nums">
+              {invoice.id}
+            </TableCell>
+            <TableCell>
+              <Item>
+                <ItemMedia>
+                  <Avatar>
+                    <AvatarImage
+                      src={invoice.customer.imageUrl}
+                      className="object-cover"
+                    />
+                    <AvatarFallback>
+                      {invoice.customer.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{invoice.customer.name}</ItemTitle>
+                  <ItemDescription>{invoice.customer.email}</ItemDescription>
+                </ItemContent>
+              </Item>
+            </TableCell>
+            <TableCell>{formatDateToLocal(invoice.date)}</TableCell>
+            <TableCell>{invoice.status}</TableCell>
+            <TableCell className="text-right tabular-nums">
+              {formatCurrency(invoice.amount)}
+            </TableCell>
+
+            <TableCell></TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+
+  return (
+    <div className="flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">

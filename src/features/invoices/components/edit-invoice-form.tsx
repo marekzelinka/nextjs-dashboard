@@ -1,18 +1,29 @@
 "use client";
 
-import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
+import { LucidePen } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useId } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Select, SelectOption } from "@/components/ui/native-select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Spinner } from "@/components/ui/spinner";
 import type { SelectCustomer, SelectInvoice } from "@/db/schema";
 import { updateInvoice } from "../actions/update-invoice";
 import type { UpdateInvoiceActionState } from "../types";
+
+const statusOptions: { [key in SelectInvoice["status"]]: string } = {
+  pending: "Pending",
+  paid: "Paid",
+};
 
 export function EditInvoiceForm({
   invoice,
@@ -25,137 +36,123 @@ export function EditInvoiceForm({
 }) {
   const initialState: UpdateInvoiceActionState = { message: null, errors: {} };
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  const [formState, formAction, isPending] = useActionState(
+    updateInvoiceWithId,
+    initialState,
+  );
+
+  console.log(invoice.customer.id);
+
+  const formId = useId();
 
   return (
-    <Form action={formAction} aria-describedby="form-error">
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Customer Name */}
-        <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block font-medium text-sm">
-            Choose customer
-          </label>
-          <div className="relative">
-            <select
-              id="customer"
-              name="customerId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={invoice.customer.id}
-              aria-describedby="customer-error"
-            >
-              <option value="" disabled>
-                Select a customer
-              </option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] text-gray-500" />
-          </div>
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.customerId?.map((error) => (
-              <p className="mt-2 text-red-500 text-sm" key={error}>
-                {error}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        {/* Invoice Amount */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block font-medium text-sm">
-            Choose an amount
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.01"
-                defaultValue={invoice.amount}
-                placeholder="Enter USD amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="amount-error"
-              />
-              <CurrencyDollarIcon className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          <div id="amount-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.amount?.map((error) => (
-              <p className="mt-2 text-red-500 text-sm" key={error}>
-                {error}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        {/* Invoice Status */}
-        <fieldset aria-describedby="status-error">
-          <legend className="mb-2 block font-medium text-sm">
-            Set the invoice status
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-3.5 py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="pending"
-                  name="status"
-                  type="radio"
-                  value="pending"
-                  defaultChecked={invoice.status === "pending"}
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="pending"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 font-medium text-gray-600 text-xs"
-                >
-                  Pending <ClockIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="paid"
-                  name="status"
-                  type="radio"
-                  value="paid"
-                  defaultChecked={invoice.status === "paid"}
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="paid"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 font-medium text-white text-xs"
-                >
-                  Paid <CheckIcon className="h-4 w-4" />
-                </label>
-              </div>
-            </div>
-          </div>
-          <div id="status-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.status?.map((error) => (
-              <p className="mt-2 text-red-500 text-sm" key={error}>
-                {error}
-              </p>
-            ))}
-          </div>
-        </fieldset>
-        <div id="form-error" aria-live="polite" aria-atomic="true">
-          {state.message && (
-            <p className="mt-2 text-red-500 text-sm">{state.message}</p>
-          )}
-        </div>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/invoices"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 font-medium text-gray-600 text-sm transition-colors hover:bg-gray-200"
+    <Form action={formAction} aria-describedby={`${formId}-form-error`}>
+      <FieldGroup>
+        <Field
+          data-disabled={isPending}
+          data-invalid={Boolean(formState.errors?.customerId?.length)}
         >
-          Cancel
-        </Link>
-        <Button type="submit">Edit Invoice</Button>
-      </div>
+          <FieldLabel htmlFor={`${formId}-customerId`}>
+            Choose customer
+          </FieldLabel>
+          <Select
+            name="customerId"
+            id={`${formId}-customerId`}
+            disabled={isPending}
+            aria-invalid={Boolean(formState.errors?.customerId?.length)}
+            defaultValue={invoice.customer.id}
+          >
+            <SelectOption value="">Select a customer</SelectOption>
+            {customers.map((customer) => (
+              <SelectOption key={customer.id} value={customer.id}>
+                {customer.name}
+              </SelectOption>
+            ))}
+          </Select>
+          {formState.errors?.customerId ? (
+            <FieldError>{formState.errors.customerId[0]}</FieldError>
+          ) : null}
+        </Field>
+        <Field
+          data-disabled={isPending}
+          data-invalid={Boolean(formState.errors?.amount?.length)}
+        >
+          <FieldLabel htmlFor={`${formId}-amount`}>Amount</FieldLabel>
+          <Input
+            type="number"
+            name="amount"
+            id={`${formId}-amount`}
+            disabled={isPending}
+            aria-invalid={Boolean(formState.errors?.amount?.length)}
+            step="0.01"
+            placeholder="Enter USD amount"
+            defaultValue={invoice.amount}
+          />
+          {formState.errors?.amount ? (
+            <FieldError>{formState.errors.amount[0]}</FieldError>
+          ) : null}
+        </Field>
+        <FieldSet
+          data-disabled={isPending}
+          data-invalid={Boolean(formState.errors?.status?.length)}
+        >
+          <FieldLabel>Set the invoice status</FieldLabel>
+          <RadioGroup
+            name="status"
+            aria-invalid={Boolean(formState.errors?.status?.length)}
+            defaultValue={invoice.status}
+          >
+            {Object.entries(statusOptions).map(([value, title]) => (
+              <Field
+                key={value}
+                orientation="horizontal"
+                data-disabled={isPending}
+                data-invalid={Boolean(formState.errors?.status?.length)}
+              >
+                <RadioGroupItem
+                  id={`${formId}-${value}-status`}
+                  value={value}
+                  aria-invalid={Boolean(formState.errors?.status?.length)}
+                />
+                <FieldLabel
+                  htmlFor={`${formId}-${value}-status`}
+                  className="font-normal"
+                >
+                  {title}
+                </FieldLabel>
+              </Field>
+            ))}
+          </RadioGroup>
+          {formState.errors?.status ? (
+            <FieldError>{formState.errors.status[0]}</FieldError>
+          ) : null}
+        </FieldSet>
+        <Field>
+          {formState.message ? (
+            <FieldError id={`${formId}-form-error`}>
+              {formState.message}
+            </FieldError>
+          ) : null}
+          <div className="flex justify-end gap-3">
+            <Button type="submit" disabled={isPending} className="order-last">
+              {isPending ? (
+                <>
+                  <Spinner />
+                  Saving Invoice...
+                </>
+              ) : (
+                <>
+                  <LucidePen />
+                  Edit Invocie
+                </>
+              )}
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href="/dashboard/invoices">Cancel</Link>
+            </Button>
+          </div>
+        </Field>
+      </FieldGroup>
     </Form>
   );
 }

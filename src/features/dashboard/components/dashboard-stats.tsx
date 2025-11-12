@@ -1,17 +1,17 @@
 import {
-  BanknotesIcon,
-  ClockIcon,
-  InboxIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
+  LucideBanknote,
+  LucideClock3,
+  LucideInbox,
+  LucideUsers,
+} from "lucide-react";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { getDashboardStats } from "../queries/get-dashboard-stats";
-
-const iconMap = {
-  collected: BanknotesIcon,
-  customers: UserGroupIcon,
-  pending: ClockIcon,
-  invoices: InboxIcon,
-};
 
 export async function DashboardStats() {
   const {
@@ -22,7 +22,7 @@ export async function DashboardStats() {
   } = await getDashboardStats();
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid auto-rows-min gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatItem title="Collected" value={totalPaidInvoices} type="collected" />
       <StatItem title="Pending" value={totalPendingInvoices} type="pending" />
       <StatItem
@@ -39,6 +39,13 @@ export async function DashboardStats() {
   );
 }
 
+const iconMap = {
+  collected: LucideBanknote,
+  pending: LucideClock3,
+  invoices: LucideInbox,
+  customers: LucideUsers,
+};
+
 function StatItem({
   title,
   value,
@@ -51,14 +58,16 @@ function StatItem({
   const Icon = iconMap[type];
 
   return (
-    <div className="rounded-xl bg-gray-50 p-2 shadow-sm">
-      <div className="flex p-4">
-        {Icon ? <Icon className="h-5 w-5 text-gray-700" /> : null}
-        <h3 className="ml-2 font-medium text-sm">{title}</h3>
-      </div>
-      <p className="truncate rounded-xl bg-white px-4 py-8 text-center font-serif text-2xl">
-        {value}
-      </p>
-    </div>
+    <Item variant="outline">
+      <ItemMedia variant="icon">
+        <Icon />
+      </ItemMedia>
+      <ItemContent>
+        <ItemDescription>{title}</ItemDescription>
+        <ItemTitle className="font-semibold text-2xl tabular-nums xl:text-3xl">
+          {value}
+        </ItemTitle>
+      </ItemContent>
+    </Item>
   );
 }

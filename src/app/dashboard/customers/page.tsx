@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { SearchForm } from "@/components/search-form";
+import { PageHeader } from "@/components/page-header";
+import { SearchBox } from "@/components/search-box";
 import { CustomersTable } from "@/features/customers/components/customers-table";
 import { CustomersTableSkeleton } from "@/features/customers/skeletons/customers-table-skeleton";
 
@@ -16,19 +17,24 @@ export default async function CustomersPage({
   const searchQuery = query?.toString() ?? "";
 
   return (
-    <div className="w-full">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="font-serif text-2xl">Customers</h1>
+    <>
+      <PageHeader
+        breadcrumbs={[
+          { href: "/dashboard", title: "Dashboard" },
+          { href: "/dashboard/customers", title: "Customers" },
+        ]}
+      />
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 md:gap-6">
+        <div className="flex items-center justify-between gap-2 md:mt-8">
+          <SearchBox
+            action="/dashboard/customers"
+            placeholder="Search invoices..."
+          />
+        </div>
+        <Suspense key={searchQuery} fallback={<CustomersTableSkeleton />}>
+          <CustomersTable query={searchQuery} />
+        </Suspense>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <SearchForm
-          action="/dashboard/customers"
-          placeholder="Search invoices..."
-        />
-      </div>
-      <Suspense key={searchQuery} fallback={<CustomersTableSkeleton />}>
-        <CustomersTable query={searchQuery} />
-      </Suspense>
-    </div>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Breadcrumbs } from "@/components/breadcrumbs";
+import { PageHeader } from "@/components/page-header";
 import { getCustomers } from "@/features/customers/queries/get-customers";
 import { CreateInvoiceForm } from "@/features/invoices/components/create-invoice-form";
 
@@ -11,18 +11,18 @@ export default async function CreateInvoicePage() {
   const customers = await getCustomers();
 
   return (
-    <main>
-      <Breadcrumbs
+    <>
+      <PageHeader
         breadcrumbs={[
-          { label: "Invoices", href: "/dashboard/invoices" },
-          {
-            label: "Create Invoice",
-            href: "/dashboard/invoices/create",
-            active: true,
-          },
+          { href: "/dashboard/invoices", title: "Invoices" },
+          { href: "/dashboard/invoices/create", title: "Create Invoice" },
         ]}
       />
-      <CreateInvoiceForm customers={customers} />
-    </main>
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 md:gap-6">
+        <div className="mx-auto w-full max-w-md">
+          <CreateInvoiceForm customers={customers} />
+        </div>
+      </div>
+    </>
   );
 }

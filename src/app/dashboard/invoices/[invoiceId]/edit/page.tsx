@@ -1,6 +1,6 @@
 import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
-import { Breadcrumbs } from "@/components/breadcrumbs";
+import { PageHeader } from "@/components/page-header";
 import { getCustomers } from "@/features/customers/queries/get-customers";
 import { EditInvoiceForm } from "@/features/invoices/components/edit-invoice-form";
 import { getInvoice } from "@/features/invoices/queries/get-invoice";
@@ -24,18 +24,21 @@ export default async function EditInvoicePage({
   }
 
   return (
-    <main>
-      <Breadcrumbs
+    <>
+      <PageHeader
         breadcrumbs={[
-          { label: "Invoices", href: "/dashboard/invoices" },
+          { href: "/dashboard/invoices", title: "Invoices" },
           {
-            label: "Edit Invoice",
             href: `/dashboard/invoices/${invoiceId}/edit` as Route,
-            active: true,
+            title: "Edit Invoices",
           },
         ]}
       />
-      <EditInvoiceForm invoice={invoice} customers={customers} />
-    </main>
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 md:gap-6">
+        <div className="mx-auto w-full max-w-md">
+          <EditInvoiceForm invoice={invoice} customers={customers} />
+        </div>
+      </div>
+    </>
   );
 }

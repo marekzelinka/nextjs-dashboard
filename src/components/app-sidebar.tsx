@@ -6,6 +6,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components//ui/sidebar";
 import { AppLogo } from "@/components/app-logo";
 import { NavMain } from "./nav-main";
@@ -29,6 +30,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

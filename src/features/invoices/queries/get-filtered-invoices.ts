@@ -47,14 +47,16 @@ export async function getFilteredInvoices({
     .limit(limit)
     .offset(offset);
 
-  const invoicesWithCustomerField = invoices.map((invoice) => ({
-    ...invoice,
-    customer: {
-      name: invoice.name,
-      email: invoice.email,
-      imageUrl: invoice.imageUrl,
-    },
-  }));
+  const invoicesWithCustomerField = invoices.map(
+    ({ name, email, imageUrl, ...invoice }) => ({
+      ...invoice,
+      customer: {
+        name,
+        email,
+        imageUrl,
+      },
+    }),
+  );
 
   return invoicesWithCustomerField;
 }

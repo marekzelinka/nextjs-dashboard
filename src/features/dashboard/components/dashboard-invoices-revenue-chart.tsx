@@ -36,7 +36,8 @@ export async function DashboardInvoicesRevenueChart() {
   const { yAxisLabels, topLabel } = generateYAxis(revenue);
 
   return (
-    <div className="w-full md:col-span-4">
+    // <div className="w-full md:col-span-4">
+    <div className="w-full">
       <h2 className="mb-4 font-serif text-xl md:text-2xl">Recent Revenue</h2>
       <div className="rounded-xl bg-gray-50 p-4">
         <div className="mt-0 grid grid-cols-12 items-end gap-2 rounded-md bg-white p-4 sm:grid-cols-13 md:gap-4">

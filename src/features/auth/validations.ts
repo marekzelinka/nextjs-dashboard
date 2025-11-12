@@ -1,4 +1,3 @@
-import type { Route } from "next";
 import * as z from "zod";
 
 const NameSchema = z

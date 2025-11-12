@@ -22,7 +22,6 @@ export async function login(_prevState: LoginActionState, formData: FormData) {
   }
 
   const { email, password, callbackUrl } = validatedFields.data;
-  console.log({ callbackUrl });
 
   try {
     await auth.api.signInEmail({
