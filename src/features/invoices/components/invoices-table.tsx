@@ -59,7 +59,7 @@ export async function InvoicesTable({
                   </Avatar>
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle className="min-w-0 truncate">
+                  <ItemTitle>
                     {invoice.customer.name}{" "}
                     <span className="font-normal text-muted-foreground">
                       {invoice.customer.email}

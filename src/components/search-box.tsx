@@ -18,14 +18,12 @@ export function SearchBox({
   action,
   searchParam = "query",
   label,
-  isDisabled,
   placeholder,
   defaultValue,
 }: Pick<FormProps<Route>, "action"> &
   Pick<ComponentProps<"input">, "placeholder" | "defaultValue"> & {
     searchParam?: string;
     label: string;
-    isDisabled?: boolean;
   }) {
   const searchParams = useSearchParams();
 
@@ -38,7 +36,7 @@ export function SearchBox({
 
   return (
     <Form action={action}>
-      <InputGroup data-disabled={isDisabled}>
+      <InputGroup>
         <InputGroupInput
           type="search"
           name={searchParam}
@@ -48,7 +46,6 @@ export function SearchBox({
             defaultValue ?? searchParams.get(searchParam)?.toString()
           }
           aria-label={label}
-          disabled={isDisabled}
         />
         <InputGroupAddon>
           <SearchIcon />

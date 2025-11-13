@@ -45,13 +45,13 @@ export default async function InvoicesPage({
           <SearchBox
             action="/dashboard/invoices"
             label="Filter by name or customer email"
-            isDisabled={totalPages === 0}
             placeholder="Filter invoices..."
           />
           <CreateInvoiceButton />
         </div>
-        {totalPages > 0 ? (
+        {totalPages > 0 || searchQuery !== "" ? (
           <div className="flex flex-col gap-4">
+            <InvoicesTableSkeleton />
             <Suspense
               key={searchQuery + currentPage}
               fallback={<InvoicesTableSkeleton />}

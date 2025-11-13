@@ -1,114 +1,141 @@
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+const tableColumns = [
+  { header: "#", label: "Invoice id" },
+  { header: "Customer" },
+  { header: "Date" },
+  { header: "Status" },
+  { header: "Amount", className: "text-right" },
+  { header: <span className="sr-only">"Actions"</span> },
+];
+
 export function InvoicesTableSkeleton() {
   return (
-    <div className="mt-6 flow-root">
-      <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-            <InvoicesMobileSkeleton />
-          </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left font-normal text-sm">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Email
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="relative pt-2 pr-6 pb-4 pl-3 sm:pr-6"
-                >
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-              <TableRowSkeleton />
-            </tbody>
-          </table>
+    <>
+      <div className="md:hidden">
+        <ItemGroup className="gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Item key={i} role="listitem" variant="outline">
+              <ItemMedia>
+                {/* invoice.customer.imageUrl  */}
+                <Skeleton className="size-10 rounded-full" />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>
+                  {/* invoice.customer.name */}
+                  <Skeleton className="h-4 w-30" />
+                  {/* invoice.customer.email */}
+                  <Skeleton className="h-4 w-30" />
+                </ItemTitle>
+                <ItemDescription>
+                  {/* invoice.date */}
+                  <Skeleton className="h-4 w-30 bg-red-500" />
+                </ItemDescription>
+              </ItemContent>
+              <ItemContent>
+                <ItemDescription className="text-right text-foreground tabular-nums">
+                  {/* invoice.amount */}
+                  <Skeleton className="h-4 w-30" />
+                </ItemDescription>
+                <ItemDescription className="text-right">
+                  {/* invoice.status */}
+                  <Skeleton className="h-4 w-28" />
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                {/* EditInvoiceButton */}
+                <Skeleton className="h-8 w-8" />
+                {/* DeleteInvoiceButton */}
+                <Skeleton className="h-8 w-8" />
+              </ItemActions>
+            </Item>
+          ))}
+        </ItemGroup>
+      </div>
+      <div className="max-md:hidden">
+        <div className="overflow-hidden rounded-md border">
+          <Table>
+            <TableHeader className="bg-muted">
+              <TableRow>
+                {tableColumns.map((column, index) => (
+                  <TableHead
+                    key={index}
+                    aria-label={column.label}
+                    className={column.className}
+                  >
+                    {column.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell className="tabular-nums">
+                    {/* invoice.id */}
+                    <Skeleton className="h-4 w-3" />
+                  </TableCell>
+                  <TableCell>
+                    <Item className="p-0">
+                      <ItemMedia>
+                        {/* invoice.customer.imageUrl  */}
+                        <Skeleton className="size-10 rounded-full" />
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle>
+                          {/* invoice.customer.name */}
+                          <Skeleton className="h-4 w-30" />
+                        </ItemTitle>
+                        <ItemDescription>
+                          {/* invoice.customer.email */}
+                          <Skeleton className="h-4 w-30" />
+                        </ItemDescription>
+                      </ItemContent>
+                    </Item>
+                  </TableCell>
+                  <TableCell>
+                    {/* invoice.date */}
+                    <Skeleton className="h-4 w-30" />
+                  </TableCell>
+                  <TableCell>
+                    {/* invoice.status */}
+                    <Skeleton className="h-4 w-28" />
+                  </TableCell>
+                  <TableCell className="text-right tabular-nums">
+                    {/* invoice.amount */}
+                    <Skeleton className="h-4 w-30" />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-end gap-2">
+                      {/* EditInvoiceButton */}
+                      <Skeleton className="h-8 w-8" />
+                      {/* DeleteInvoiceButton */}
+                      <Skeleton className="h-8 w-8" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
-    </div>
-  );
-}
-
-function InvoicesMobileSkeleton() {
-  return (
-    <div className="mb-2 w-full rounded-md bg-white p-4">
-      <div className="flex items-center justify-between border-gray-100 border-b pb-8">
-        <div className="flex items-center">
-          <div className="mr-2 h-8 w-8 rounded-full bg-gray-100"></div>
-          <div className="h-6 w-16 rounded bg-gray-100"></div>
-        </div>
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </div>
-      <div className="flex w-full items-center justify-between pt-4">
-        <div>
-          <div className="h-6 w-16 rounded bg-gray-100"></div>
-          <div className="mt-2 h-6 w-24 rounded bg-gray-100"></div>
-        </div>
-        <div className="flex justify-end gap-2">
-          <div className="h-10 w-10 rounded bg-gray-100"></div>
-          <div className="h-10 w-10 rounded bg-gray-100"></div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TableRowSkeleton() {
-  return (
-    <tr className="w-full border-gray-100 border-b last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-      {/* Customer Name and Image */}
-      <td className="relative overflow-hidden whitespace-nowrap py-3 pr-3 pl-6">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-gray-100"></div>
-          <div className="h-6 w-24 rounded bg-gray-100"></div>
-        </div>
-      </td>
-      {/* Email */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-32 rounded bg-gray-100"></div>
-      </td>
-      {/* Amount */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </td>
-      {/* Date */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </td>
-      {/* Status */}
-      <td className="whitespace-nowrap px-3 py-3">
-        <div className="h-6 w-16 rounded bg-gray-100"></div>
-      </td>
-      {/* Actions */}
-      <td className="whitespace-nowrap py-3 pr-3 pl-6">
-        <div className="flex justify-end gap-3">
-          <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
-          <div className="h-[38px] w-[38px] rounded bg-gray-100"></div>
-        </div>
-      </td>
-    </tr>
+    </>
   );
 }
