@@ -16,11 +16,17 @@ import { Spinner } from "@/components/ui/spinner";
 
 export function SearchBox({
   action,
-  name = "query",
+  searchParam = "query",
+  label,
+  isDisabled,
   placeholder,
   defaultValue,
 }: Pick<FormProps<Route>, "action"> &
-  Pick<ComponentProps<"input">, "name" | "placeholder" | "defaultValue">) {
+  Pick<ComponentProps<"input">, "placeholder" | "defaultValue"> & {
+    searchParam?: string;
+    label: string;
+    isDisabled?: boolean;
+  }) {
   const searchParams = useSearchParams();
 
   const handleChange = useDebouncedCallback(
@@ -32,13 +38,17 @@ export function SearchBox({
 
   return (
     <Form action={action}>
-      <InputGroup>
+      <InputGroup data-disabled={isDisabled}>
         <InputGroupInput
           type="search"
-          name={name}
+          name={searchParam}
           onChange={handleChange}
           placeholder={placeholder}
-          defaultValue={defaultValue ?? searchParams.get(name)?.toString()}
+          defaultValue={
+            defaultValue ?? searchParams.get(searchParam)?.toString()
+          }
+          aria-label={label}
+          disabled={isDisabled}
         />
         <InputGroupAddon>
           <SearchIcon />

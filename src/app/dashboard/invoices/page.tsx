@@ -3,6 +3,12 @@ import { Suspense } from "react";
 import { DataPagination } from "@/components/data-pagination";
 import { PageHeader } from "@/components/page-header";
 import { SearchBox } from "@/components/search-box";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { CreateInvoiceButton } from "@/features/invoices/components/create-invoice-button";
 import { InvoicesTable } from "@/features/invoices/components/invoices-table";
 import { INVOICES_PER_PAGE } from "@/features/invoices/constants";
@@ -38,23 +44,38 @@ export default async function InvoicesPage({
         <div className="flex items-center justify-between gap-2">
           <SearchBox
             action="/dashboard/invoices"
+            label="Filter by name or customer email"
+            isDisabled={totalPages === 0}
             placeholder="Filter invoices..."
           />
           <CreateInvoiceButton />
         </div>
-        <Suspense
-          key={searchQuery + currentPage}
-          fallback={<InvoicesTableSkeleton />}
-        >
-          <InvoicesTable
-            query={searchQuery}
-            currentPage={currentPage}
-            limit={INVOICES_PER_PAGE}
-          />
-        </Suspense>
-        <div className="flex w-full justify-center">
-          <DataPagination totalPages={totalPages} />
-        </div>
+        {totalPages > 0 ? (
+          <div className="flex flex-col gap-4">
+            <Suspense
+              key={searchQuery + currentPage}
+              fallback={<InvoicesTableSkeleton />}
+            >
+              <InvoicesTable
+                query={searchQuery}
+                currentPage={currentPage}
+                limit={INVOICES_PER_PAGE}
+              />
+            </Suspense>
+            <div className="flex w-full justify-center">
+              <DataPagination totalPages={totalPages} />
+            </div>
+          </div>
+        ) : (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>No Invoices Yet</EmptyTitle>
+              <EmptyDescription>
+                You haven&apos;t created any invoices yet.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        )}
       </div>
     </>
   );
