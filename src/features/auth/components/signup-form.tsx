@@ -17,15 +17,20 @@ import { Spinner } from "@/components/ui/spinner";
 import { signup } from "../actions/signup";
 import type { SignupActionState } from "../types";
 
+const initialSignupActionState: SignupActionState = {
+  message: null,
+  errors: {},
+};
+
 export function SignupForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? undefined;
 
-  const initialState: SignupActionState = { message: null, errors: {} };
   const [formState, formAction, isPending] = useActionState(
     signup,
-    initialState,
+    initialSignupActionState,
   );
+  console.log(formState);
 
   const formId = useId();
 
@@ -35,7 +40,7 @@ export function SignupForm() {
       <FieldGroup>
         <Field
           data-disabled={isPending}
-          data-invalid={Boolean(formState.errors?.email?.length)}
+          data-invalid={Boolean(formState.errors?.name?.length)}
         >
           <FieldLabel htmlFor={`${formId}-name`}>Full Name</FieldLabel>
           <Input

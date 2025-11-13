@@ -17,14 +17,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { login } from "../actions/login";
 import type { LoginActionState } from "../types";
 
+const initialLoginActionState: LoginActionState = { message: null, errors: {} };
+
 export function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? undefined;
 
-  const initialState: LoginActionState = { message: null, errors: {} };
   const [formState, formAction, isPending] = useActionState(
     login,
-    initialState,
+    initialLoginActionState,
   );
 
   const formId = useId();

@@ -1,5 +1,6 @@
 "use server";
 
+import { APIError } from "better-auth";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import * as z from "zod";
@@ -21,7 +22,7 @@ export async function signup(
   if (!validatedFields.success) {
     return {
       errors: z.flattenError(validatedFields.error).fieldErrors,
-      message: "Missing Fields. Failed to Create Account.",
+      message: "Missing some fields. Failed to create account.",
     };
   }
 
@@ -31,9 +32,22 @@ export async function signup(
     await auth.api.signUpEmail({
       body: { name, email, password },
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof APIError) {
+      if (error.body?.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
+        return {
+          errors: { email: [error.message] },
+          message: "Missing some fields. Failed to create account.",
+        };
+      }
+
+      return {
+        message: `${error.message}.`,
+      };
+    }
+
     return {
-      message: "Database Error: Failed to Create Account.",
+      message: "Database error: Failed to create account.",
     };
   }
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { APIError } from "better-auth";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import * as z from "zod";
@@ -17,7 +18,7 @@ export async function login(_prevState: LoginActionState, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: z.flattenError(validatedFields.error).fieldErrors,
-      message: "Missing Fields. Failed to Login.",
+      message: "Missing some fields. Failed to login.",
     };
   }
 
@@ -27,9 +28,15 @@ export async function login(_prevState: LoginActionState, formData: FormData) {
     await auth.api.signInEmail({
       body: { email, password },
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof APIError) {
+      return {
+        message: `${error.message}.`,
+      };
+    }
+
     return {
-      message: "Database Error: Failed to Login.",
+      message: "Database error: Failed to login.",
     };
   }
 
