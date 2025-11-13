@@ -30,7 +30,7 @@ export function PageHeader({ breadcrumbs }: { breadcrumbs: Crumb<Route>[] }) {
           <BreadcrumbList>
             {breadcrumbs.map((item, index) => (
               <Fragment key={item.href}>
-                <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbItem>
                   {index === breadcrumbs.length - 1 ? (
                     <BreadcrumbPage>{item.title}</BreadcrumbPage>
                   ) : (
@@ -40,7 +40,7 @@ export function PageHeader({ breadcrumbs }: { breadcrumbs: Crumb<Route>[] }) {
                   )}
                 </BreadcrumbItem>
                 {index < breadcrumbs.length - 1 ? (
-                  <BreadcrumbSeparator className="hidden md:block" />
+                  <BreadcrumbSeparator />
                 ) : null}
               </Fragment>
             ))}

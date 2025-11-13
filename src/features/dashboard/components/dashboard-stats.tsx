@@ -1,6 +1,7 @@
 import {
   LucideBanknote,
   LucideClock3,
+  type LucideIcon,
   LucideInbox,
   LucideUsers,
 } from "lucide-react";
@@ -23,14 +24,22 @@ export async function DashboardStats() {
 
   return (
     <div className="grid auto-rows-min gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <StatItem title="Collected" value={totalPaidInvoices} type="collected" />
-      <StatItem title="Pending" value={totalPendingInvoices} type="pending" />
-      <StatItem
+      <DashboardStat
+        title="Collected"
+        value={totalPaidInvoices}
+        type="collected"
+      />
+      <DashboardStat
+        title="Pending"
+        value={totalPendingInvoices}
+        type="pending"
+      />
+      <DashboardStat
         title="Total Invoices"
         value={numberOfInvoices}
         type="invoices"
       />
-      <StatItem
+      <DashboardStat
         title="Total Customers"
         value={numberOfCustomers}
         type="customers"
@@ -39,21 +48,23 @@ export async function DashboardStats() {
   );
 }
 
-const iconMap = {
+type StatType = "invoices" | "customers" | "pending" | "collected";
+
+const iconMap: { [key in StatType]: LucideIcon } = {
   collected: LucideBanknote,
   pending: LucideClock3,
   invoices: LucideInbox,
   customers: LucideUsers,
 };
 
-function StatItem({
+function DashboardStat({
   title,
   value,
   type,
 }: {
   title: string;
   value: number | string;
-  type: "invoices" | "customers" | "pending" | "collected";
+  type: StatType;
 }) {
   const Icon = iconMap[type];
 
@@ -63,10 +74,10 @@ function StatItem({
         <Icon />
       </ItemMedia>
       <ItemContent>
-        <ItemDescription>{title}</ItemDescription>
-        <ItemTitle className="font-semibold text-2xl tabular-nums xl:text-3xl">
+        <ItemTitle className="text-muted-foreground">{title}</ItemTitle>
+        <ItemDescription className="font-semibold text-2xl text-foreground tabular-nums xl:text-3xl">
           {value}
-        </ItemTitle>
+        </ItemDescription>
       </ItemContent>
     </Item>
   );

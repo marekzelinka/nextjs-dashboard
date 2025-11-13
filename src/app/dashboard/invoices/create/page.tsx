@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
-import { getCustomers } from "@/features/customers/queries/get-customers";
+import { getCustomerOptions } from "@/features/customers/queries/get-customer-options";
 import { CreateInvoiceForm } from "@/features/invoices/components/create-invoice-form";
 
 export const metadata: Metadata = {
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CreateInvoicePage() {
-  const customers = await getCustomers();
+  const customers = await getCustomerOptions();
 
   return (
     <>

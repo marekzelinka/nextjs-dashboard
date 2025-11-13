@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { DataPagination } from "@/components/data-pagination";
 import { PageHeader } from "@/components/page-header";
-import { Pagination } from "@/components/pagination";
 import { SearchBox } from "@/components/search-box";
 import { CreateInvoiceButton } from "@/features/invoices/components/create-invoice-button";
 import { InvoicesTable } from "@/features/invoices/components/invoices-table";
 import { INVOICES_PER_PAGE } from "@/features/invoices/constants";
-import { getInvoicesPages } from "@/features/invoices/queries/get-invoices-pages";
+import { getInvoicePages } from "@/features/invoices/queries/get-invoice-pages";
 import { InvoicesTableSkeleton } from "@/features/invoices/skeletons/invoices-table-skeleton";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default async function InvoicesPage({
   const searchQuery = query?.toString() ?? "";
   const currentPage = Number(page) || 1;
 
-  const totalPages = await getInvoicesPages({
+  const totalPages = await getInvoicePages({
     query: searchQuery,
     limit: INVOICES_PER_PAGE,
   });
@@ -53,7 +53,7 @@ export default async function InvoicesPage({
           />
         </Suspense>
         <div className="flex w-full justify-center">
-          <Pagination totalPages={totalPages} />
+          <DataPagination totalPages={totalPages} />
         </div>
       </div>
     </>

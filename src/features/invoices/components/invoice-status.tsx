@@ -1,29 +1,27 @@
-import { CheckIcon, ClockIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
+import { LucideCheck, LucideClock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import type { SelectInvoice } from "@/db/schema";
+import { cn } from "@/lib/utils";
 
-export function InvoiceStatus({ status }: { status: string }) {
+export function InvoiceStatus({ status }: { status: SelectInvoice["status"] }) {
   return (
-    <span
-      className={clsx(
-        "inline-flex items-center rounded-full px-2 py-1 text-xs",
-        {
-          "bg-gray-100 text-gray-500": status === "pending",
-          "bg-green-500 text-white": status === "paid",
-        },
-      )}
+    <Badge
+      className={cn({
+        "bg-gray-100 text-gray-500": status === "pending",
+        "bg-green-500 text-white": status === "paid",
+      })}
     >
       {status === "pending" ? (
         <>
           Pending
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
+          <LucideClock className="size-4" />
         </>
-      ) : null}
-      {status === "paid" ? (
+      ) : status === "paid" ? (
         <>
           Paid
-          <CheckIcon className="ml-1 w-4 text-white" />
+          <LucideCheck className="size-4" />
         </>
       ) : null}
-    </span>
+    </Badge>
   );
 }

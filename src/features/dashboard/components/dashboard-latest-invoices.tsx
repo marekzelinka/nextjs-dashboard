@@ -35,7 +35,7 @@ export async function DashboardLatestInvoices() {
             <Fragment key={invoice.id}>
               <Item role="listitem">
                 <ItemMedia>
-                  <Avatar>
+                  <Avatar className="size-10">
                     <AvatarImage
                       src={invoice.customer.imageUrl}
                       className="grayscale"

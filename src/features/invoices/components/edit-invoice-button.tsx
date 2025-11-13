@@ -1,13 +1,15 @@
-import { PencilIcon } from "@heroicons/react/24/outline";
+import { LucidePen } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import type { SelectInvoice } from "@/db/schema";
 
-export function EditInvoiceButton({ id }: { id: string }) {
+export function EditInvoiceButton({ id }: { id: SelectInvoice["id"] }) {
   return (
-    <Link
-      href={`/dashboard/invoices/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
-    >
-      <PencilIcon className="w-5" />
-    </Link>
+    <Button asChild size="icon-sm" variant="outline">
+      <Link href={`/dashboard/invoices/${id}/edit`}>
+        <span className="sr-only">Edit invoice</span>
+        <LucidePen />
+      </Link>
+    </Button>
   );
 }

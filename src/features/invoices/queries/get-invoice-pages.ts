@@ -3,7 +3,7 @@ import { db } from "@/db/connection";
 import { customers, invoices } from "@/db/schema";
 import { requireAuth } from "@/features/auth/queries/require-auth";
 
-export async function getInvoicesPages({
+export async function getInvoicePages({
   query,
   limit,
 }: {

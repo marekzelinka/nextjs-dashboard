@@ -3,7 +3,7 @@ import { db } from "@/db/connection";
 import * as schema from "@/db/schema";
 import { requireAuth } from "@/features/auth/queries/require-auth";
 
-export async function getCustomers() {
+export async function getCustomerOptions() {
   const { userId } = await requireAuth();
 
   const customers = await db

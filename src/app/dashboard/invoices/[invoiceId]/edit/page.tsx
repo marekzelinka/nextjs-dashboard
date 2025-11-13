@@ -1,7 +1,7 @@
 import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
-import { getCustomers } from "@/features/customers/queries/get-customers";
+import { getCustomerOptions } from "@/features/customers/queries/get-customer-options";
 import { EditInvoiceForm } from "@/features/invoices/components/edit-invoice-form";
 import { getInvoice } from "@/features/invoices/queries/get-invoice";
 
@@ -16,7 +16,7 @@ export default async function EditInvoicePage({
 
   const [invoice, customers] = await Promise.all([
     getInvoice({ id: invoiceId }),
-    getCustomers(),
+    getCustomerOptions(),
   ]);
 
   if (!invoice) {
